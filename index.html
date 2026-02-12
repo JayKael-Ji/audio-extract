@@ -114,7 +114,12 @@
       setStatus("正在加载处理引擎（首次会稍慢）…");
       ffmpeg.on("log", ({ message }) => log(message));
       ffmpeg.on("progress", ({ progress }) => { prog.value = progress || 0; });
-      await ffmpeg.load();
+      const baseURL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm";
+      await ffmpeg.load({
+         coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+         wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+         workerURL: await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, "text/javascript"),
+      });
       loaded = true;
       setStatus("引擎已就绪。");
     }
